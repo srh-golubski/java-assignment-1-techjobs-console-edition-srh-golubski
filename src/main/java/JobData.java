@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Collections;
 
 /**
  * Created by LaunchCode
@@ -54,7 +55,9 @@ public class JobData {
         loadData();
 
         // Bonus mission; normal version returns allJobs
-        return new ArrayList<>(allJobs);
+        ArrayList<HashMap<String, String>> allJobsCopy = new ArrayList<>(allJobs);
+
+        return allJobsCopy;
     }
 
     /**
@@ -79,7 +82,7 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
@@ -98,8 +101,22 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
-        // TODO - implement this method
-        return null;
+        boolean termIsPresent = false;
+
+        ArrayList<HashMap<String, String>> jobsByValue = new ArrayList<>();
+        for (HashMap<String, String> job : allJobs) {
+            for (String key: job.keySet()) {
+                if (job.get(key).toLowerCase().contains(value.toLowerCase())) {
+                    termIsPresent = true;
+                }
+            }
+
+            if (termIsPresent && !jobsByValue.contains(job)) {
+                jobsByValue.add(job);
+                termIsPresent = false;
+            }
+        }
+        return jobsByValue;
     }
 
     /**
